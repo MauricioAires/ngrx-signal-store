@@ -51,6 +51,8 @@ import { EmployeesStore } from './stores/employee-store';
       (input)="updateSalaryTo($event)"
     />
 
+    <button type="button" (click)="store.clearFilters()">clear filters</button>
+
     @if(store.isLoading()) {
     <loader />
     } @if (store.items(); as employees) {
