@@ -1,0 +1,30 @@
+<input
+  type="text"
+  name=""
+  id=""
+  placeholder="name search"
+  [value]="store.filters.name()"
+  (input)="updateName($event)"
+/>
+
+<input
+  type="number"
+  name=""
+  id=""
+  step="1000"
+  placeholder="salary from"
+  [value]="store.filters.salary.from()"
+  (input)="updateSalaryFrom($event)"
+/>
+
+<input
+  type="number"
+  name=""
+  id=""
+  step="1000"
+  placeholder="salary to"
+  [value]="store.filters.salary.to()"
+  (input)="updateSalaryTo($event)"
+/>
+
+<button type="button" (click)="store.clearFilters()">clear filters</button>

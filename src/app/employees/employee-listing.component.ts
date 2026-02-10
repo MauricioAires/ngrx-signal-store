@@ -8,6 +8,7 @@ import { NameAndTitlePipe } from './pipes/name-and-title.pipe';
 import { FlagPipe } from './pipes/flag.pipe';
 import { LoaderComponent } from '../loader.component';
 import { EmployeesStore } from './stores/employee-store';
+import { EmployeesFiltersComponent } from './components/employees-filters/employees-filters.component';
 
 @Component({
   selector: 'employee-listing',
@@ -18,41 +19,11 @@ import { EmployeesStore } from './stores/employee-store';
     NameAndTitlePipe,
     FlagPipe,
     LoaderComponent,
-    JsonPipe,
+    EmployeesFiltersComponent,
   ],
   // providers: [ EmployeesStore ],
   template: `
-    <input
-      type="text"
-      name=""
-      id=""
-      placeholder="name search"
-      [value]="store.filters.name()"
-      (input)="updateName($event)"
-    />
-
-    <input
-      type="number"
-      name=""
-      id=""
-      step="1000"
-      placeholder="salary from"
-      [value]="store.filters.salary.from()"
-      (input)="updateSalaryFrom($event)"
-    />
-
-    <input
-      type="number"
-      name=""
-      id=""
-      step="1000"
-      placeholder="salary to"
-      [value]="store.filters.salary.to()"
-      (input)="updateSalaryTo($event)"
-    />
-
-    <button type="button" (click)="store.clearFilters()">clear filters</button>
-
+    <app-employees-filters />
     @if(store.isLoading()) {
     <loader />
     } @if (store.items(); as employees) {
@@ -75,27 +46,13 @@ import { EmployeesStore } from './stores/employee-store';
   styles: [``],
 })
 export class EmployeeListingComponent {
+  /**
+   * Specialize service
+   */
+  /**
+   *  Shared login and state across the components
+   */
   protected store = inject(EmployeesStore);
-
-  protected updateName(e: Event): void {
-    const newValue = (e.target as HTMLInputElement).value;
-
-    this.store.updateFiltersName(newValue);
-  }
-  protected updateSalaryFrom(e: Event): void {
-    const newValue = parseInt((e.target as HTMLInputElement).value);
-
-    this.store.updateFiltersFrom({
-      from: newValue,
-    });
-  }
-  protected updateSalaryTo(e: Event): void {
-    const newValue = parseInt((e.target as HTMLInputElement).value);
-
-    this.store.updateFiltersFrom({
-      to: newValue,
-    });
-  }
 
   // employees$!: Observable<Employee[]>;
   // #employeeHTTP = inject(EmployeesHTTPService);
