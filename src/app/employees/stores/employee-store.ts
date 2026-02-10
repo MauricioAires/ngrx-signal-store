@@ -130,7 +130,39 @@ export const EmployeesStore = signalStore(
       logger.logMessage('clear finished');
     },
   })),
-  withMethods((store) => ({})),
+
+  /**
+   * States updates
+   */
+  withMethods((store) => ({
+    /**
+     * Private method, just this store can set the
+     * state is loading
+     */
+    _setLoading() {
+      patchState(store, {
+        isLoading: true,
+        error: null,
+        _loadedItems: [],
+      });
+    },
+
+    _setErro(error: EmployeeStore['error']) {
+      patchState(store, {
+        isLoading: false,
+        error,
+        _loadedItems: [],
+      });
+    },
+
+    _setItems(_loadedItems: EmployeeStore['_loadedItems']) {
+      patchState(store, {
+        _loadedItems,
+        isLoading: false,
+        error: null,
+      });
+    },
+  })),
   withMethods((store, employeesHTTP = inject(EmployeesHTTPService)) => ({
     /**
      * 1. all things rxjs operators
@@ -140,28 +172,14 @@ export const EmployeesStore = signalStore(
      */
     loadEmployees: rxMethod<void>(
       pipe(
-        tap(() => {
-          patchState(store, {
-            isLoading: true,
-            error: null,
-            _loadedItems: [],
-          });
-        }), // Loading
+        tap(() => store._setLoading()),
         switchMap(() => employeesHTTP.getEmployees()),
         tap({
           next(items) {
-            patchState(store, {
-              _loadedItems: items,
-              isLoading: false,
-              error: null,
-            });
+            store._setItems(items);
           },
           error(error) {
-            patchState(store, {
-              isLoading: false,
-              error,
-              _loadedItems: [],
-            });
+            store._setErro(error);
           },
         })
       )

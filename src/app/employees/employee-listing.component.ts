@@ -56,29 +56,4 @@ export class EmployeeListingComponent {
    *  Shared login and state across the components
    */
   protected store = inject(EmployeesStore);
-
-  // employees$!: Observable<Employee[]>;
-  // #employeeHTTP = inject(EmployeesHTTPService);
-
-  // isLoading = true;
-  // error: Error | null = null;
-
-  // ngOnInit() {
-  //   this.employees$ = this.#employeeHTTP.getEmployees().pipe(
-  //     tap(() => {
-  //       this.error = null;
-  //       this.isLoading = true;
-  //     }),
-  //     finalize(() => {
-  //       this.isLoading = false;
-  //     }),
-  //     catchError((err) => {
-  //       this.error = err;
-  //       return NEVER;
-  //     })
-  //   );
-  //   // this.employees$ = this.employeeHTTP.getEmployees({ nationality: "PL" })
-  //   // this.employees$ = this.employeeHTTP.getEmployees({ office_like: "Poland" })
-  //   // this.employees$ = this.employeeHTTP.getEmployees({ office_like: "Łódź" })
-  // }
 }
