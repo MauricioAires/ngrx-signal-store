@@ -1,14 +1,14 @@
-import { Email } from './shared.d';
+import type { Email } from './shared.d';
 
 export type Benefit = {
-  "id": string;
-  "beneficiary": {
+  id: string;
+  beneficiary: {
     name: string;
     email: Email;
   };
-  "country": string;
-  "city": string;
-  "service": string;
-  "monthlyFee": number;
-  "subscribedAtDate": string;
+  country: string;
+  city: string;
+  service: string;
+  monthlyFee: number;
+  subscribedAtDate: string;
 };

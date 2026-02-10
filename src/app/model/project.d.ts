@@ -1,15 +1,15 @@
-import { Money } from './shared';
+import type { Money } from './shared';
 
 export type Project = {
-  "id": string;
-  "name": string;
-  "budget": Money;
-  "startDate": string;
-  "endDate": string;
-  "team": {
-    "id": number;
-    "name": string;
+  id: string;
+  name: string;
+  budget: Money;
+  startDate: string;
+  endDate: string;
+  team: {
+    id: number;
+    name: string;
   }[];
-  "manager": number;
-  "description": string;
+  manager: number;
+  description: string;
 };

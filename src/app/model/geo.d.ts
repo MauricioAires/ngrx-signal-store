@@ -1,3 +1,3 @@
-import { Nationality } from './shared';
+import type { Nationality } from './shared';
 
-export type Geo = { [n in Nationality]: string }
+export type Geo = { [n in Nationality]: string };
