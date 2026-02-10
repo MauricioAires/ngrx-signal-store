@@ -7,6 +7,7 @@ import { EmployeesHTTPService } from './services/employeesHTTP.service';
 import { NameAndTitlePipe } from './pipes/name-and-title.pipe';
 import { FlagPipe } from './pipes/flag.pipe';
 import { LoaderComponent } from '../loader.component';
+import { EmployeesStore } from './stores/employee-store';
 
 @Component({
   selector: 'employee-listing',
@@ -20,9 +21,9 @@ import { LoaderComponent } from '../loader.component';
   ],
   // providers: [ EmployeesStore ],
   template: `
-    @if(isLoading) {
+    @if(store.isLoading()) {
     <loader />
-    } @if (employees$ | async; as employees) {
+    } @if (store.items(); as employees) {
     <div>
       count: {{ employees.length }}
       <ul>
@@ -42,28 +43,30 @@ import { LoaderComponent } from '../loader.component';
   styles: [``],
 })
 export class EmployeeListingComponent {
-  employees$!: Observable<Employee[]>;
-  #employeeHTTP = inject(EmployeesHTTPService);
+  protected store = inject(EmployeesStore);
 
-  isLoading = true;
-  error: Error | null = null;
+  // employees$!: Observable<Employee[]>;
+  // #employeeHTTP = inject(EmployeesHTTPService);
 
-  ngOnInit() {
-    this.employees$ = this.#employeeHTTP.getEmployees().pipe(
-      tap(() => {
-        this.error = null;
-        this.isLoading = true;
-      }),
-      finalize(() => {
-        this.isLoading = false;
-      }),
-      catchError((err) => {
-        this.error = err;
-        return NEVER;
-      })
-    );
-    // this.employees$ = this.employeeHTTP.getEmployees({ nationality: "PL" })
-    // this.employees$ = this.employeeHTTP.getEmployees({ office_like: "Poland" })
-    // this.employees$ = this.employeeHTTP.getEmployees({ office_like: "Łódź" })
-  }
+  // isLoading = true;
+  // error: Error | null = null;
+
+  // ngOnInit() {
+  //   this.employees$ = this.#employeeHTTP.getEmployees().pipe(
+  //     tap(() => {
+  //       this.error = null;
+  //       this.isLoading = true;
+  //     }),
+  //     finalize(() => {
+  //       this.isLoading = false;
+  //     }),
+  //     catchError((err) => {
+  //       this.error = err;
+  //       return NEVER;
+  //     })
+  //   );
+  //   // this.employees$ = this.employeeHTTP.getEmployees({ nationality: "PL" })
+  //   // this.employees$ = this.employeeHTTP.getEmployees({ office_like: "Poland" })
+  //   // this.employees$ = this.employeeHTTP.getEmployees({ office_like: "Łódź" })
+  // }
 }
