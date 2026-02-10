@@ -24,8 +24,11 @@ import { EmployeesFiltersComponent } from './components/employees-filters/employ
   // providers: [ EmployeesStore ],
   template: `
     <app-employees-filters />
+
+    <button type="button" (click)="store.loadEmployees()">reload</button>
     @if(store.isLoading()) {
     <loader />
+
     } @if (store.items(); as employees) {
     <div>
       count: {{ store.count() }}

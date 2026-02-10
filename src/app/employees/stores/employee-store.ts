@@ -6,12 +6,15 @@ import {
   withState,
 } from '@ngrx/signals';
 import { Employee } from '../../model';
-import { computed } from '@angular/core';
-import { mockEmployees } from './employees.mock';
+import { computed, inject } from '@angular/core';
+// import { mockEmployees } from './employees.mock'; // Not used, any more
 import { produce } from 'immer';
-
+import { LoggerService } from '../services/logger.service';
+import { EmployeesHTTPService } from '../services/employeesHTTP.service';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { pipe, switchMap, tap } from 'rxjs';
 type EmployeeStore = {
-  loadedItems: Employee[];
+  _loadedItems: Employee[];
   isLoading: boolean;
   error: Error | null;
   filters: {
@@ -20,8 +23,14 @@ type EmployeeStore = {
   };
 };
 
+/**
+ * The underscore (_) character says that the property is
+ * visible only in the store.
+ */
+
 const initialState: EmployeeStore = {
-  loadedItems: mockEmployees,
+  // _loadedItems: mockEmployees,
+  _loadedItems: [],
   isLoading: false,
   error: null,
   filters: {
@@ -39,12 +48,12 @@ export const EmployeesStore = signalStore(
   //   providedIn: 'root',
   // },
   withState(initialState),
-  withComputed(({ loadedItems, filters }) => ({
+  withComputed(({ _loadedItems, filters }) => ({
     count: computed(() => {
-      return loadedItems().length;
+      return _loadedItems().length;
     }),
     items: computed(() => {
-      let result = loadedItems();
+      let result = _loadedItems();
 
       if (filters.name().length) {
         const search = filters.name().toLowerCase();
@@ -68,7 +77,7 @@ export const EmployeesStore = signalStore(
       return result;
     }),
   })),
-  withMethods((store) => ({
+  withMethods((store, logger = inject(LoggerService)) => ({
     updateFiltersName(name: EmployeeStore['filters']['name']) {
       patchState(store, (state) => ({
         filters: {
@@ -98,6 +107,7 @@ export const EmployeesStore = signalStore(
       );
     },
     clearFilters() {
+      logger.logMessage('clear started');
       patchState(
         store,
         (state) => ({
@@ -116,9 +126,55 @@ export const EmployeesStore = signalStore(
           },
         })
       );
+
+      logger.logMessage('clear finished');
     },
+  })),
+  withMethods((store) => ({})),
+  withMethods((store, employeesHTTP = inject(EmployeesHTTPService)) => ({
+    /**
+     * 1. all things rxjs operators
+     * 2. IMPERATIVELY: value
+     * 3. REACTIVE: signal, stream
+     * really powerfully method
+     */
+    loadEmployees: rxMethod<void>(
+      pipe(
+        tap(() => {
+          patchState(store, {
+            isLoading: true,
+            error: null,
+            _loadedItems: [],
+          });
+        }), // Loading
+        switchMap(() => employeesHTTP.getEmployees()),
+        tap({
+          next(items) {
+            patchState(store, {
+              _loadedItems: items,
+              isLoading: false,
+              error: null,
+            });
+          },
+          error(error) {
+            patchState(store, {
+              isLoading: false,
+              error,
+              _loadedItems: [],
+            });
+          },
+        })
+      )
+    ),
   }))
 );
+
+/**
+ * Can create many groups of the function withMethods or
+ * withComputed and group de function, for example
+ * function about HTTP request or function just about
+ * data manipulation
+ */
 
 /**
  * SignalStore was created, and now I need to understand why this code was created...
