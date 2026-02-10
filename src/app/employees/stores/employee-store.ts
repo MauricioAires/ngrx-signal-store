@@ -2,6 +2,7 @@ import {
   patchState,
   signalStore,
   withComputed,
+  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -184,7 +185,36 @@ export const EmployeesStore = signalStore(
         })
       )
     ),
-  }))
+    async loadEmployees_AA() {
+      store._setLoading();
+
+      try {
+        const items = await employeesHTTP.fetchEmployees();
+
+        store._setItems(items);
+      } catch (err) {
+        const error =
+          err instanceof Error
+            ? err
+            : new Error('Unknown Error', {
+                cause: err,
+              });
+
+        store._setErro(error);
+      }
+    },
+  })),
+  withHooks({
+    onInit(store) {
+      console.log('init');
+
+      store.loadEmployees();
+      // store.loadEmployees_AA();
+    },
+    onDestroy(_store) {
+      console.log('destroy');
+    },
+  })
 );
 
 /**
