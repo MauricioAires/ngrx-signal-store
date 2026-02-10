@@ -1,13 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { Employee } from '../model';
+import { Employee } from '../../model';
 
 @Pipe({
   standalone: true,
-  name: 'nameAndTitle'
+  name: 'nameAndTitle',
 })
 export class NameAndTitlePipe implements PipeTransform {
   transform(e: Employee): string {
-    return `${ e.firstName } ${ e.lastName }, ${ e.title }`
+    return `${e.firstName} ${e.lastName}, ${e.title}`;
   }
 }

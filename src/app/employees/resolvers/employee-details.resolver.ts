@@ -5,8 +5,8 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 
-import { EmployeesHTTPService } from './employeesHTTP.service';
 import { Employee } from '../../model';
+import { EmployeesHTTPService } from '../services/employeesHTTP.service';
 
 @Injectable({
   providedIn: 'root',
