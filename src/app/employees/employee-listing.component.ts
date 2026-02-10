@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { catchError, finalize, NEVER, Observable, tap } from 'rxjs';
 import { Employee } from '../model';
@@ -14,18 +14,48 @@ import { EmployeesStore } from './stores/employee-store';
   standalone: true,
   imports: [
     RouterModule,
-    CommonModule,
+    // CommonModule, Can I import only Angular pipes or I import only CommonModule
     NameAndTitlePipe,
     FlagPipe,
     LoaderComponent,
+    JsonPipe,
   ],
   // providers: [ EmployeesStore ],
   template: `
+    <input
+      type="text"
+      name=""
+      id=""
+      placeholder="name search"
+      [value]="store.filters.name()"
+      (input)="updateName($event)"
+    />
+
+    <input
+      type="number"
+      name=""
+      id=""
+      step="1000"
+      placeholder="salary from"
+      [value]="store.filters.salary.from()"
+      (input)="updateFiltersFrom($event)"
+    />
+
+    <input
+      type="number"
+      name=""
+      id=""
+      step="1000"
+      placeholder="salary to"
+      [value]="store.filters.salary.to()"
+      (input)="updateFiltersTo($event)"
+    />
+
     @if(store.isLoading()) {
     <loader />
     } @if (store.items(); as employees) {
     <div>
-      count: {{ employees.length }}
+      count: {{ store.count() }}
       <ul>
         @for (e of employees; track e) {
         <li>
@@ -44,6 +74,26 @@ import { EmployeesStore } from './stores/employee-store';
 })
 export class EmployeeListingComponent {
   protected store = inject(EmployeesStore);
+
+  protected updateName(e: Event): void {
+    const newValue = (e.target as HTMLInputElement).value;
+
+    this.store.updateFiltersName(newValue);
+  }
+  protected updateSalaryFrom(e: Event): void {
+    const newValue = parseInt((e.target as HTMLInputElement).value);
+
+    this.store.updateFiltersFrom({
+      from: newValue,
+    });
+  }
+  protected updateSalaryTo(e: Event): void {
+    const newValue = parseInt((e.target as HTMLInputElement).value);
+
+    // this.store.updateFiltersTo({
+    //   to: newValue,
+    // });
+  }
 
   // employees$!: Observable<Employee[]>;
   // #employeeHTTP = inject(EmployeesHTTPService);
