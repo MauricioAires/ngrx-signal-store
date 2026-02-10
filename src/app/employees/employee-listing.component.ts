@@ -38,7 +38,7 @@ import { EmployeesStore } from './stores/employee-store';
       step="1000"
       placeholder="salary from"
       [value]="store.filters.salary.from()"
-      (input)="updateFiltersFrom($event)"
+      (input)="updateSalaryFrom($event)"
     />
 
     <input
@@ -48,7 +48,7 @@ import { EmployeesStore } from './stores/employee-store';
       step="1000"
       placeholder="salary to"
       [value]="store.filters.salary.to()"
-      (input)="updateFiltersTo($event)"
+      (input)="updateSalaryTo($event)"
     />
 
     @if(store.isLoading()) {
@@ -90,9 +90,9 @@ export class EmployeeListingComponent {
   protected updateSalaryTo(e: Event): void {
     const newValue = parseInt((e.target as HTMLInputElement).value);
 
-    // this.store.updateFiltersTo({
-    //   to: newValue,
-    // });
+    this.store.updateFiltersFrom({
+      to: newValue,
+    });
   }
 
   // employees$!: Observable<Employee[]>;

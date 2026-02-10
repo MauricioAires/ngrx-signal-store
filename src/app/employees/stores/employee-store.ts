@@ -8,7 +8,7 @@ import {
 import { Employee } from '../../model';
 import { computed } from '@angular/core';
 import { mockEmployees } from './employees.mock';
-// import { produce } from 'immer';
+import { produce } from 'immer';
 
 type EmployeeStore = {
   loadedItems: Employee[];
@@ -87,7 +87,15 @@ export const EmployeesStore = signalStore(
       //     },
       //   },
       // }));
-      // patchState(store, (state) => produce(state, (draft) => {}));
+      patchState(
+        store,
+        (state) =>
+          produce(state, (draft) => {
+            Object.assign(draft.filters.salary, value);
+          })
+
+        // checkout ngrx-immer package
+      );
     },
   }))
 );
